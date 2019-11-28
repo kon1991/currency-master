@@ -4,7 +4,7 @@ import AddConversionForm from './AddConversionForm';
 import EditConversionForm from './EditConversionForm';
 import DeleteConversionForm from './DeleteConversionForm';
 
-const URL = 'http://localhost:80/currency-calculator/public/action.php';
+const URL = 'http://localhost:80/currency-master/public/action.php';
 
 class App extends Component {
   constructor(props) {
@@ -63,15 +63,17 @@ class App extends Component {
     event.preventDefault();
     const amount = this.state.amount;
     const rate = this.state.rate;
-    let obj = {name: "kon", lname: "dal"};
-    let data = JSON.stringify(obj);
-    data = "json="+data;
-    console.log(data);
-    const response = fetch(URL,{
+   
+    var data = {some:"data",even:"more"};
+   
+    
+    fetch(URL,{
       method:"POST",
-      body: data,
-      headers: { 'content-type': 'application/x-www-form-urlencoded' }
-    }).then(()=> console.log("WOW"));
+      body: JSON.stringify(data),
+      mode: 'cors',
+      headers: {'content-type': 'application/json'}
+      //headers: {'content-type': 'application/json'}
+    }).then(response => response.json()).then(data => console.log(data.some));
 
     this.setState({convertedAmount: amount * rate});
   }
@@ -267,8 +269,8 @@ class App extends Component {
         let conversionRate = conversionToOptions[j].rate;
         let name = `${conversionFromName} TO ${conversionToName}`
         let id = conversionToOptions[j].id;
-        editOptions.push(<option key={id} id={id} from={conversionFromName} to={conversionToName} value={`${id},${conversionFromName},${conversionToName},${conversionRate}`}>{name}</option>)
-        key = key + 1;
+        editOptions.push(<option key={key} id={id} from={conversionFromName} to={conversionToName} value={`${id},${conversionFromName},${conversionToName},${conversionRate}`}>{name}</option>)
+        key++;
       }
     }
     editOptions.push(<option key={key} value="" selected>Select Conversion</option>)
@@ -292,7 +294,7 @@ class App extends Component {
             </label>
             </section>
             <input type="number" name="amount" value={this.state.value} onChange={this.handleAmountChange}/>
-            <input type="submit" value="Convert" />
+            <button type="submit" value="Convert">Convert</button>
           </form>
           <h1 className="converted">{this.state.convertedAmount}</h1>
         </div>
